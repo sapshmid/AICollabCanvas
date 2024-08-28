@@ -15,18 +15,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        val editProfileButton: Button = findViewById(R.id.btnEditProfile)
-//        editProfileButton.setOnClickListener(::onEditStudentButtonClicked)
 
         displayProfileFragment()
     }
 
-//    fun onEditStudentButtonClicked(view: View) {
-//        if (profileFragment == null) {
-//            displayProfileFragment()
-//        } else
-//            removeProfileFragment()
-//    }
+
 
     fun displayProfileFragment() {
         profileFragment = ProfileFragment.newInstance("Name","Role")

@@ -32,43 +32,83 @@
             android:src="@drawable/person2" />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/tvProfileName"
+    <FrameLayout
+        android:id="@+id/flProfileName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cvProfilePicCard"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="50dp"
-        android:gravity="center"
+        android:gravity="center">
+
+        <TextView
+        android:id="@+id/tvProfileName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="Name"
         android:textAlignment="center"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvProfilePicCard" />
+        android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/tvProfileRole"
+        <EditText
+            android:id="@+id/etEditName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Name"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="80dp"
         android:gravity="center"
-        android:text="role"
-        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProfileName" />
+        app:layout_constraintTop_toBottomOf="@+id/flProfileName">
 
-    <Button
-        android:id="@+id/btnEditProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"
+        <TextView
+            android:id="@+id/tvProfileRole"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Role"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/etEditRole"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:inputType="text"
+            android:text="Name"
+            android:textAlignment="center"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/ibtnEditProfileButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/edit_pencil_small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
