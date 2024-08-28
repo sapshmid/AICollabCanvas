@@ -10,8 +10,8 @@ import android.widget.TextView
 
 class ProfileFragment : Fragment() {
 
-    private var name: String? = null
-    private var role: String? = null
+    var name: String? = null
+    var role: String? = null
     var profileName: TextView? = null
     var profileRole: TextView? = null
 
@@ -47,11 +47,10 @@ class ProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         profileName = view.findViewById(R.id.tvProfileName)
-        profileName?.text = "Some name" //name
+        profileName?.text = name
 
         profileRole = view.findViewById(R.id.tvProfileRole)
-        profileRole?.text = "Some role"; //name
-
+        profileRole?.text = role
         return view
     }
 

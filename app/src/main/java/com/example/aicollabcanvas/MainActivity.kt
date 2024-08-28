@@ -29,11 +29,10 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     fun displayProfileFragment() {
-        profileFragment = ProfileFragment()
-
-        profileFragment?.let {
+        profileFragment = ProfileFragment.newInstance("Name","Role")
+        profileFragment?.let { fragment ->
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fcMainProfileContainer, it)
+            transaction.add(R.id.fcMainProfileContainer, fragment)
             transaction.addToBackStack("Tag")
             transaction.commit()
         }
