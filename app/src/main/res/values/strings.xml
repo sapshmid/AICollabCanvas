@@ -2,4 +2,23 @@
     <string name="app_name">AICollabCanvas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="head_title">Welcome to AICollabCanvas!</string>
+    <string name="add_password">Enter Password</string>
+    <string name="add_email">Enter Email</string>
+    <string name="addEmail">Enter Email Address</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forgot">Forgot Password?</string>
+    <string name="newhere">New Here? Sign Up Now!</string>
+    <string name="register">Register to be a member!</string>
+    <string name="firstName">First Name</string>
+    <string name="sdf" />
+    <string name="lastName">Last Name</string>
+    <string name="emailadress">Email Address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="contributor">Contributor\n</string>
+    <string name="checkcontributor">Contributor</string>
+    <string name="checkcommunity">Community</string>
+    <string name="con_register">Register</string>
 </resources>
