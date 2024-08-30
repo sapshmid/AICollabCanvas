@@ -97,16 +97,31 @@
             tools:visibility="visible" />
     </FrameLayout>
 
-    <ImageButton
-        android:id="@+id/ibtnEditProfileButton"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="#FFFFFF"
-        android:src="@drawable/edit_pencil_small"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/ibtnEditProfileButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:src="@drawable/edit_pencil_small" />
+
+        <ImageButton
+            android:id="@+id/ibtnSaveButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:src="@drawable/save_edit"
+            android:visibility="gone" />
+    </FrameLayout>
+
 
     <ImageButton
         android:id="@+id/ibtnEditPictureButton"
@@ -117,6 +132,17 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cvProfilePicCard"
         app:layout_constraintEnd_toStartOf="@+id/cvProfilePicCard" />
+
+    <ImageButton
+        android:id="@+id/ibtnCancelButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/cancel"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

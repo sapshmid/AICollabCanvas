@@ -1,5 +1,6 @@
 package com.example.aicollabcanvas
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun displayProfileFragment() {
-        profileFragment = ProfileFragment.newInstance("Name","Role")
+        profileFragment = ProfileFragment.newInstance("Name","Role", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.empty_profile}"))
         profileFragment?.let { fragment ->
             val transaction = supportFragmentManager.beginTransaction()
             transaction.add(R.id.fcMainProfileContainer, fragment)

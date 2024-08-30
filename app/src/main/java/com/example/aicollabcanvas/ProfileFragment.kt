@@ -28,25 +28,30 @@ class ProfileFragment : Fragment() {
     var editRole: EditText? = null
 
     var editProfileButton: ImageButton? = null
-    var editMode: Boolean = false
 
     var pic: Uri? = null
+    var editedPic: Uri? = null
+
     var profilePic: ImageView? = null
     var editPictureButton: ImageButton? = null
-
     lateinit var galleryLauncher: ActivityResultLauncher<Intent>
+
+    var saveProfileEditButton: ImageButton? = null
+    var cancelProfileEditButton: ImageButton? = null
 
     companion object {
 
         // Later on, these will be the values received from the registration
         const val NAME = "NAME"
         const val ROLE = "ROLE"
+        const val PIC = "PIC"
 
-        fun newInstance(name: String, role: String) =
+        fun newInstance(name: String, role: String, pic: Uri) =
             ProfileFragment().apply {
                 arguments = Bundle().apply {
                     putString(NAME, name)
                     putString(ROLE, role)
+                    putString(PIC, pic.toString())
                 }
             }
 
@@ -58,6 +63,8 @@ class ProfileFragment : Fragment() {
         arguments?.let {
             name = it.getString(NAME)
             role = it.getString(ROLE)
+            pic = Uri.parse(it.getString(PIC))
+            editedPic = pic
         }
 
         galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -65,7 +72,8 @@ class ProfileFragment : Fragment() {
                 val selectedImageUri = result.data?.data
                 selectedImageUri?.let {
                     profilePic?.setImageURI(it)
-                    pic = it
+                    editedPic = it
+
                 }
             }
         }
@@ -95,45 +103,33 @@ class ProfileFragment : Fragment() {
         editProfileButton?.setOnClickListener(::onEditProfileButtonClicked)
 
         profilePic = view.findViewById(R.id.ivProfilePic)
+        profilePic?.setImageURI(pic)
 
         editPictureButton = view.findViewById(R.id.ibtnEditPictureButton)
         editPictureButton?.setOnClickListener(::onEditPictureButtonClicked)
 
+        saveProfileEditButton = view.findViewById(R.id.ibtnSaveButton)
+        saveProfileEditButton?.setOnClickListener(::onSaveEditButtonClicked)
+
+        cancelProfileEditButton = view.findViewById(R.id.ibtnCancelButton)
+        cancelProfileEditButton?.setOnClickListener(::onCancelEditButtonClicked)
 
         return view
     }
 
     fun onEditProfileButtonClicked(view: View) {
-        if(!editMode) {
-            profileName?.visibility = View.GONE
-            profileRole?.visibility = View.GONE
 
-            editName?.visibility = View.VISIBLE
-            editRole?.visibility = View.VISIBLE
+        profileName?.visibility = View.GONE
+        profileRole?.visibility = View.GONE
 
-            editProfileButton?.setImageResource(R.drawable.save_edit)
-            editPictureButton?.visibility = View.VISIBLE
+        editName?.visibility = View.VISIBLE
+        editRole?.visibility = View.VISIBLE
+        editPictureButton?.visibility = View.VISIBLE
 
-            editMode = true
-        } else {
-            name = editName?.text.toString()
-            profileName?.text = name
+        saveProfileEditButton?.visibility = View.VISIBLE
+        cancelProfileEditButton?.visibility = View.VISIBLE
 
-            role = editRole?.text.toString()
-            profileRole?.text = role
-
-            profileName?.visibility = View.VISIBLE
-            profileRole?.visibility = View.VISIBLE
-
-            editName?.visibility = View.GONE
-            editRole?.visibility = View.GONE
-
-            editProfileButton?.setImageResource(R.drawable.edit_pencil_small)
-            editPictureButton?.visibility = View.GONE
-
-            editMode = false
-        }
-
+        //editProfileButton?.setImageResource(R.drawable.save_edit)
 
     }
 
@@ -143,9 +139,48 @@ class ProfileFragment : Fragment() {
         galleryIntent.type = "image/*"
         galleryLauncher.launch(galleryIntent)
 
+    }
+
+    fun onSaveEditButtonClicked(view: View) {
+
+        name = editName?.text.toString()
+        profileName?.text = name
+        pic = editedPic
+
+        role = editRole?.text.toString()
+        profileRole?.text = role
+
+        profileName?.visibility = View.VISIBLE
+        profileRole?.visibility = View.VISIBLE
+
+        editName?.visibility = View.GONE
+        editRole?.visibility = View.GONE
+        editPictureButton?.visibility = View.GONE
+
+        saveProfileEditButton?.visibility = View.GONE
+        cancelProfileEditButton?.visibility = View.GONE
+
+        //editProfileButton?.setImageResource(R.drawable.edit_pencil_small)
 
     }
 
+    fun onCancelEditButtonClicked(view: View) {
 
+        editName?.setText(name)
+        editRole?.setText(role)
+
+        editedPic = pic
+        profilePic?.setImageURI(pic)
+
+        profileName?.visibility = View.VISIBLE
+        profileRole?.visibility = View.VISIBLE
+
+        editName?.visibility = View.GONE
+        editRole?.visibility = View.GONE
+        editPictureButton?.visibility = View.GONE
+
+        saveProfileEditButton?.visibility = View.GONE
+        cancelProfileEditButton?.visibility = View.GONE
+    }
 
 }
