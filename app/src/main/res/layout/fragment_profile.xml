@@ -108,7 +108,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <ImageButton
+        android:id="@+id/ibtnEditPictureButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/edit_picture_small"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/cvProfilePicCard"
+        app:layout_constraintEnd_toStartOf="@+id/cvProfilePicCard" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

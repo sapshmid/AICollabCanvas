@@ -1,5 +1,9 @@
 package com.example.aicollabcanvas
 
+import android.app.Activity
+import android.content.Intent
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,7 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 
 
 class ProfileFragment : Fragment() {
@@ -22,6 +29,12 @@ class ProfileFragment : Fragment() {
 
     var editProfileButton: ImageButton? = null
     var editMode: Boolean = false
+
+    var pic: Uri? = null
+    var profilePic: ImageView? = null
+    var editPictureButton: ImageButton? = null
+
+    lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
     companion object {
 
@@ -47,11 +60,22 @@ class ProfileFragment : Fragment() {
             role = it.getString(ROLE)
         }
 
+        galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val selectedImageUri = result.data?.data
+                selectedImageUri?.let {
+                    profilePic?.setImageURI(it)
+                    pic = it
+                }
+            }
+        }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
@@ -68,13 +92,18 @@ class ProfileFragment : Fragment() {
         editRole?.setText(role)
 
         editProfileButton = view.findViewById(R.id.ibtnEditProfileButton)
-        editProfileButton?.setOnClickListener(::onEditStudentButtonClicked)
+        editProfileButton?.setOnClickListener(::onEditProfileButtonClicked)
+
+        profilePic = view.findViewById(R.id.ivProfilePic)
+
+        editPictureButton = view.findViewById(R.id.ibtnEditPictureButton)
+        editPictureButton?.setOnClickListener(::onEditPictureButtonClicked)
 
 
         return view
     }
 
-    fun onEditStudentButtonClicked(view: View) {
+    fun onEditProfileButtonClicked(view: View) {
         if(!editMode) {
             profileName?.visibility = View.GONE
             profileRole?.visibility = View.GONE
@@ -83,6 +112,7 @@ class ProfileFragment : Fragment() {
             editRole?.visibility = View.VISIBLE
 
             editProfileButton?.setImageResource(R.drawable.save_edit)
+            editPictureButton?.visibility = View.VISIBLE
 
             editMode = true
         } else {
@@ -99,9 +129,19 @@ class ProfileFragment : Fragment() {
             editRole?.visibility = View.GONE
 
             editProfileButton?.setImageResource(R.drawable.edit_pencil_small)
+            editPictureButton?.visibility = View.GONE
 
             editMode = false
         }
+
+
+    }
+
+    fun onEditPictureButtonClicked(view: View) {
+
+        val galleryIntent = Intent(Intent.ACTION_PICK)
+        galleryIntent.type = "image/*"
+        galleryLauncher.launch(galleryIntent)
 
 
     }
