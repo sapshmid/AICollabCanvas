@@ -26,8 +26,7 @@ class MainActivity : AppCompatActivity() {
         profileFragment = ProfileFragment.newInstance("Name","Role", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.empty_profile}"))
         profileFragment?.let { fragment ->
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fcMainProfileContainer, fragment)
-            transaction.addToBackStack("Tag")
+            transaction.replace(R.id.fcMainProfileContainer, fragment)
             transaction.commit()
         }
 

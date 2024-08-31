@@ -73,11 +73,17 @@ class ProfileFragment : Fragment() {
                 selectedImageUri?.let {
                     profilePic?.setImageURI(it)
                     editedPic = it
-
                 }
             }
         }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(NAME, name)
+        outState.putString(ROLE, role)
+        outState.putString(PIC, pic.toString())
     }
 
     override fun onCreateView(
@@ -86,6 +92,14 @@ class ProfileFragment : Fragment() {
 
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
+
+        // Restore saved instance state
+        savedInstanceState?.let {
+            name = it.getString(NAME)
+            role = it.getString(ROLE)
+            pic = Uri.parse(it.getString(PIC))
+        }
+
 
         profileName = view.findViewById(R.id.tvProfileName)
         profileName?.text = name
@@ -104,6 +118,7 @@ class ProfileFragment : Fragment() {
 
         profilePic = view.findViewById(R.id.ivProfilePic)
         profilePic?.setImageURI(pic)
+        profilePic?.visibility = View.VISIBLE
 
         editPictureButton = view.findViewById(R.id.ibtnEditPictureButton)
         editPictureButton?.setOnClickListener(::onEditPictureButtonClicked)
