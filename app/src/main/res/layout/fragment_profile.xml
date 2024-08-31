@@ -27,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
+            android:contentDescription="@string/profile_pic_desc"
             android:outlineAmbientShadowColor="#FFFFFF"
             android:scaleType="centerCrop"
             android:src="@drawable/person2" />
@@ -46,12 +47,11 @@
         android:gravity="center">
 
         <TextView
-        android:id="@+id/tvProfileName"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Name"
-        android:textAlignment="center"
-        android:textSize="25sp" />
+            android:id="@+id/tvProfileName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:textSize="25sp" />
 
         <EditText
             android:id="@+id/etEditName"
@@ -59,7 +59,6 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:inputType="text"
-            android:text="Name"
             android:textAlignment="center"
             android:textSize="25sp"
             android:visibility="gone"
@@ -82,7 +81,6 @@
             android:id="@+id/tvProfileRole"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Role"
             android:textAlignment="center" />
 
         <EditText
@@ -91,7 +89,6 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:inputType="text"
-            android:text="Name"
             android:textAlignment="center"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -118,6 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF"
+            android:contentDescription="@string/save_button_desc"
             android:src="@drawable/save_edit"
             android:visibility="gone" />
     </FrameLayout>
@@ -128,6 +126,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
+        android:contentDescription="@string/edit_pic_button_desc"
         android:src="@drawable/edit_picture_small"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cvProfilePicCard"
@@ -139,6 +138,7 @@
         android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:background="#FFFFFF"
+        android:contentDescription="@string/cancel_button_desc"
         android:src="@drawable/cancel"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
