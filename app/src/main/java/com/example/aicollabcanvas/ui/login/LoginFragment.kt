@@ -19,11 +19,17 @@ class LoginFragment : Fragment() {
 
         // Initialize the button
         val btnRegisterHere: Button = view.findViewById(R.id.btnRegisterhere)
+        val btnForgotPassword: Button = view.findViewById(R.id.btnForgotPassword)
 
         // Set up click listener to navigate to RegisterFragment
         btnRegisterHere.setOnClickListener {
             navigateToRegisterFragment()
         }
+
+        btnForgotPassword.setOnClickListener {
+            navigateToForgotPasswordFragment()
+        }
+        
         return view
     }
 
@@ -35,6 +41,14 @@ class LoginFragment : Fragment() {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.fcMainLoginFragment, registerFragment) // Replace with the actual container id in your layout
             .addToBackStack(null) // Optional: Adds the transaction to the back stack
+            .commit()
+    }
+
+    private fun navigateToForgotPasswordFragment() {
+        val forgotPasswordFragment = ForgotPasswordFragment()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fcMainLoginFragment, forgotPasswordFragment) // Replace with your container ID
+            .addToBackStack(null)
             .commit()
     }
 
