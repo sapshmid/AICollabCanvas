@@ -29,7 +29,7 @@ class LoginFragment : Fragment() {
         btnForgotPassword.setOnClickListener {
             navigateToForgotPasswordFragment()
         }
-        
+
         return view
     }
 
