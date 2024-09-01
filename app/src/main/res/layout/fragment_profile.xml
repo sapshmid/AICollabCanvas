@@ -71,6 +71,7 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/flProfileRole"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
@@ -100,7 +101,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/frameLayout"
+            android:id="@+id/flEditSaveButtons"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
@@ -112,16 +113,18 @@
                 android:id="@+id/ibtnEditProfileButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                android:src="@drawable/edit_pencil_small" />
+                android:src="@drawable/ic_edit"
+                android:background="@android:color/transparent"
+                app:tint="#26c1c9" />
 
             <ImageButton
                 android:id="@+id/ibtnSaveButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFFFF"
                 android:contentDescription="@string/save_button_desc"
-                android:src="@drawable/save_edit"
+                android:src="@drawable/ic_save"
+                android:background="@android:color/transparent"
+                app:tint="#26c1c9"
                 android:visibility="gone" />
         </FrameLayout>
 
@@ -132,7 +135,9 @@
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/edit_pic_button_desc"
-            android:src="@drawable/edit_picture_small"
+            android:src="@drawable/ic_edit_pic"
+            android:background="@android:color/transparent"
+            app:tint="#26c1c9"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/cvProfilePicCard"
             app:layout_constraintEnd_toStartOf="@+id/cvProfilePicCard" />
@@ -143,9 +148,10 @@
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:background="#FFFFFF"
             android:contentDescription="@string/cancel_button_desc"
-            android:src="@drawable/cancel"
+            android:src="@drawable/ic_cancel"
+            android:background="@android:color/transparent"
+            app:tint="#26c1c9"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -12,12 +12,14 @@ import androidx.core.view.WindowInsetsCompat
 class MainActivity : AppCompatActivity() {
 
     var profileFragment: ProfileFragment? = null
+    var postFragment: PostFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         displayProfileFragment()
+        displayPostFragment()
     }
 
 
@@ -30,6 +32,22 @@ class MainActivity : AppCompatActivity() {
             transaction.commit()
         }
 
+    }
+
+    fun displayPostFragment() {
+        postFragment = PostFragment.newInstance("Someone",
+                                                "Community",
+            Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person2}"),
+            Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}"),
+                                                "Picture needed",
+                                                "Some picture",
+                                                "I need a picture in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd")
+
+        postFragment?.let { fragment ->
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fcMainPostContainer, fragment)
+            transaction.commit()
+        }
     }
 
     fun removeProfileFragment() {

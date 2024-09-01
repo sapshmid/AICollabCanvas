@@ -30,10 +30,11 @@ class ProfileFragment : Fragment() {
     var editProfileButton: ImageButton? = null
 
     var pic: Uri? = null
-    var editedPic: Uri? = null
-
     var profilePic: ImageView? = null
+
+    var editedPic: Uri? = null
     var editPictureButton: ImageButton? = null
+
     lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
     var saveProfileEditButton: ImageButton? = null
@@ -100,7 +101,6 @@ class ProfileFragment : Fragment() {
             pic = Uri.parse(it.getString(PIC))
         }
 
-
         profileName = view.findViewById(R.id.tvProfileName)
         profileName?.text = name
 
@@ -144,8 +144,7 @@ class ProfileFragment : Fragment() {
         saveProfileEditButton?.visibility = View.VISIBLE
         cancelProfileEditButton?.visibility = View.VISIBLE
 
-        //editProfileButton?.setImageResource(R.drawable.save_edit)
-
+        editProfileButton?.visibility = View.GONE
     }
 
     fun onEditPictureButtonClicked(view: View) {
@@ -175,8 +174,7 @@ class ProfileFragment : Fragment() {
         saveProfileEditButton?.visibility = View.GONE
         cancelProfileEditButton?.visibility = View.GONE
 
-        //editProfileButton?.setImageResource(R.drawable.edit_pencil_small)
-
+        editProfileButton?.visibility = View.VISIBLE
     }
 
     fun onCancelEditButtonClicked(view: View) {
@@ -196,6 +194,7 @@ class ProfileFragment : Fragment() {
 
         saveProfileEditButton?.visibility = View.GONE
         cancelProfileEditButton?.visibility = View.GONE
+        editProfileButton?.visibility = View.VISIBLE
     }
 
 }
