@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.aicollabcanvas.R
 
 class LoginFragment : Fragment() {
@@ -15,9 +16,27 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+
+        // Initialize the button
+        val btnRegisterHere: Button = view.findViewById(R.id.btnRegisterhere)
+
+        // Set up click listener to navigate to RegisterFragment
+        btnRegisterHere.setOnClickListener {
+            navigateToRegisterFragment()
+        }
         return view
     }
 
+    private fun navigateToRegisterFragment() {
+        // Create an instance of RegisterFragment
+        val registerFragment = RegisterFragment()
+
+        // Perform the fragment transaction
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fcMainLoginFragment, registerFragment) // Replace with the actual container id in your layout
+            .addToBackStack(null) // Optional: Adds the transaction to the back stack
+            .commit()
+    }
 
 
    // companion object {
