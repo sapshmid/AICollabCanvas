@@ -21,4 +21,8 @@
     <string name="checkcontributor">Contributor</string>
     <string name="checkcommunity">Community</string>
     <string name="con_register">Register</string>
+    <string name="Restore">Restore Password</string>
+    <string name="restore_password">Restore Password</string>
+    <string name="add_and_restore">We will send you an email to reset your password</string>
+    <string name="submit">Submit</string>
 </resources>
