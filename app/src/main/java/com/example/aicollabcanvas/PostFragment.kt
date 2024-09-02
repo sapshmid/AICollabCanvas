@@ -36,7 +36,9 @@ class PostFragment : Fragment() {
     var text: String? = null
     var postText: TextView? = null
 
-    // For editing the post, the edit button will transfer the user to the add post fragment
+    //add delete post button
+
+    // For editing the post, the edit button will transfer the user to the "add post" fragment
     // with the current data already filled in the boxes to allow changes
 
 
@@ -50,16 +52,18 @@ class PostFragment : Fragment() {
         const val SUBTITLE = "SUBTITLE"
         const val TEXT = "TEXT"
 
-        fun newInstance(name: String, role: String, pic: Uri, postPic: Uri, title: String, subtitle: String, text: String) =
+        fun newInstance(post: Post?) =
             PostFragment().apply {
                 arguments = Bundle().apply {
-                    putString(NAME, name)
-                    putString(ROLE, role)
-                    putString(PIC, pic.toString())
-                    putString(POST_PIC, postPic.toString())
-                    putString(TITLE, title)
-                    putString(SUBTITLE, subtitle)
-                    putString(TEXT, text)
+                    post?.apply {
+                        putString(NAME, post.user.name)
+                        putString(ROLE, post.user.role)
+                        putString(PIC, post.user.pic.toString())
+                        putString(POST_PIC, post.postPic.toString())
+                        putString(TITLE, post.title)
+                        putString(SUBTITLE, post.subtitle)
+                        putString(TEXT, post.text)
+                    }
                 }
             }
     }
@@ -88,6 +92,34 @@ class PostFragment : Fragment() {
         outState.putString(TEXT, text)
     }
 
+    fun updatePost(post: Post) {
+        name = post.user.name
+        role = post.user.role
+        pic = post.user.pic
+        replayPic = post.postPic
+        title = post.title
+        subtitle = post.subtitle
+        text = post.text
+        updatePostViews()
+    }
+
+    fun updatePostViews() {
+        postProfileName?.text = name
+        postProfileRole?.text = role
+        postProfilePic?.setImageURI(pic)
+        if (role == "Contributor" && replayPic != null) {
+            postReplayPic?.visibility = View.VISIBLE
+            postReplayPic?.setImageURI((replayPic))
+        }
+        else {
+            postReplayPic?.visibility = View.GONE
+        }
+
+        postTitle?.text = title
+        postSubtitle?.text = subtitle
+        postText?.text = text
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -106,28 +138,16 @@ class PostFragment : Fragment() {
         }
 
         postProfileName = view.findViewById(R.id.tvProfileName)
-        postProfileName?.text = name
-
         postProfileRole = view.findViewById(R.id.tvProfileRole)
-        postProfileRole?.text = role
 
         postProfilePic = view.findViewById(R.id.ivProfilePic)
-        postProfilePic?.setImageURI(pic)
-
         postReplayPic = view.findViewById(R.id.ivPostReplayPic)
-        postReplayPic?.setImageURI(replayPic)
-
-        if (role == "Community")
-            postReplayPic?.visibility = View.GONE
 
         postTitle = view.findViewById(R.id.tvPostTitle)
-        postTitle?.text = title
-
         postSubtitle = view.findViewById(R.id.tvPostSubtitle)
-        postSubtitle?.text = subtitle
-
         postText = view.findViewById(R.id.tvPostText)
-        postText?.text = text
+
+        updatePostViews()
 
         return view
     }

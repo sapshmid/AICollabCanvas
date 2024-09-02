@@ -1,5 +1,6 @@
 package com.example.aicollabcanvas
 
+import PostAdapter
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun displayProfileFragment() {
-        profileFragment = ProfileFragment.newInstance("Name","Role", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.empty_profile}"))
+        profileFragment = ProfileFragment.newInstance(Profile("Name","Role", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.empty_profile}")))
         profileFragment?.let { fragment ->
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fcMainProfileContainer, fragment)
@@ -35,19 +38,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun displayPostFragment() {
-        postFragment = PostFragment.newInstance("Someone",
-                                                "Community",
-            Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person2}"),
-            Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}"),
-                                                "Picture needed",
-                                                "Some picture",
-                                                "I need a picture in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd")
+        val recyclerView: RecyclerView = findViewById(R.id.rvMainPostContainer)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        postFragment?.let { fragment ->
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fcMainPostContainer, fragment)
-            transaction.commit()
-        }
+        val postList = listOf(
+            Post(Profile("Someone", "Community", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person2}")),
+                "Picture needed", "some picture", "I need a picture in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd"),
+            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
+                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
+            Post(Profile("Someone", "Community", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person2}")),
+                "Picture needed", "some picture", "I need a picture in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd"),
+            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
+                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
+        )
+
+        val adapter = PostAdapter(postList)
+        recyclerView.adapter = adapter
     }
 
     fun removeProfileFragment() {

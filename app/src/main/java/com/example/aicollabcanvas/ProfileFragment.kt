@@ -47,12 +47,12 @@ class ProfileFragment : Fragment() {
         const val ROLE = "ROLE"
         const val PIC = "PIC"
 
-        fun newInstance(name: String, role: String, pic: Uri) =
+        fun newInstance(profile: Profile) =
             ProfileFragment().apply {
                 arguments = Bundle().apply {
-                    putString(NAME, name)
-                    putString(ROLE, role)
-                    putString(PIC, pic.toString())
+                    putString(NAME, profile.name)
+                    putString(ROLE, profile.role)
+                    putString(PIC, profile.pic.toString())
                 }
             }
 

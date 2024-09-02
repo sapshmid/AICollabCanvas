@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="icons_color">#26c1c9</color>
+    <color name="pressed_button_color">#66c6c9d1</color>
+    <color name="hovered_button_color">#26c6c9d1</color>
 </resources>

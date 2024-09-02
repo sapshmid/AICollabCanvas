@@ -114,8 +114,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_edit"
-                android:background="@android:color/transparent"
-                app:tint="#26c1c9" />
+                android:background="@drawable/button_background"
+                app:tint="@color/icons_color" />
 
             <ImageButton
                 android:id="@+id/ibtnSaveButton"
@@ -123,8 +123,8 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/save_button_desc"
                 android:src="@drawable/ic_save"
-                android:background="@android:color/transparent"
-                app:tint="#26c1c9"
+                android:background="@drawable/button_background"
+                app:tint="@color/icons_color"
                 android:visibility="gone" />
         </FrameLayout>
 
@@ -136,8 +136,8 @@
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/edit_pic_button_desc"
             android:src="@drawable/ic_edit_pic"
-            android:background="@android:color/transparent"
-            app:tint="#26c1c9"
+            android:background="@drawable/button_background"
+            app:tint="@color/icons_color"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/cvProfilePicCard"
             app:layout_constraintEnd_toStartOf="@+id/cvProfilePicCard" />
@@ -150,8 +150,8 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/cancel_button_desc"
             android:src="@drawable/ic_cancel"
-            android:background="@android:color/transparent"
-            app:tint="#26c1c9"
+            android:background="@drawable/button_background"
+            app:tint="@color/icons_color"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
