@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Toast
 import com.example.aicollabcanvas.R
 
 class RegisterFragment : Fragment() {
@@ -55,14 +56,12 @@ class RegisterFragment : Fragment() {
 
         // Validate data
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            // Handle empty fields (e.g., show an error message)
-            // Example: Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (password != confirmPassword) {
-            // Handle password mismatch
-            // Example: Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
             return
         }
 
