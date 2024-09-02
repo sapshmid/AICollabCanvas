@@ -37,6 +37,19 @@ class RegisterFragment : Fragment() {
         cbCommunity = view.findViewById(R.id.cbCommunity)
         btnRegister = view.findViewById(R.id.btnRegister)
 
+        // Set listeners for the checkboxes to ensure only one is checked
+        cbContributor.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbCommunity.isChecked = false
+            }
+        }
+
+        cbCommunity.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbContributor.isChecked = false
+            }
+        }
+
         btnRegister.setOnClickListener {
             registerNewMember()
         }
@@ -64,6 +77,12 @@ class RegisterFragment : Fragment() {
         Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
             return
         }
+
+        if (!isContributor && !isCommunityMember) {
+            Toast.makeText(context, "Please select if you are a Contributor or a Community Member", Toast.LENGTH_SHORT).show()
+            return
+        }
+
 
         // Proceed with saving the data (e.g., to a backend service or local database)
         // Example: saveUserToDatabase(firstName, lastName, email, password, isContributor, isCommunityMember)
