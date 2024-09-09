@@ -25,31 +25,16 @@
         android:id="@+id/etFirstname"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginStart="71dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="130dp"
         android:ems="10"
-        android:inputType="text"
-        android:text="@string/firstName"
-        android:textColor="@color/material_dynamic_neutral70"
+        android:gravity="start|top"
+        android:hint="@string/firstName"
+        android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRegistertitle" />
-
-    <EditText
-        android:id="@+id/etLastname"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="100dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="@string/lastName"
-        android:textColor="@color/material_dynamic_neutral70"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFirstname" />
 
     <EditText
         android:id="@+id/etAddEmail"
@@ -98,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="130dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="170dp"
         android:text="@string/checkcontributor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -108,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="170dp"
         android:text="@string/checkcommunity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -126,5 +111,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etLastname"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="130dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/lastName"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etFirstname" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
