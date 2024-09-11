@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,7 +26,7 @@ class ProfileFragment : Fragment() {
     var profileRole: TextView? = null
 
     var editName: EditText? = null
-    var editRole: EditText? = null
+    var editRole: RadioGroup? = null
 
     var editProfileButton: ImageButton? = null
 
@@ -110,8 +111,10 @@ class ProfileFragment : Fragment() {
         editName = view.findViewById(R.id.etEditName)
         editName?.setText(name)
 
-        editRole = view.findViewById(R.id.etEditRole)
-        editRole?.setText(role)
+        editRole = view.findViewById(R.id.rgRole)
+        role?.let {
+            setCurrentRole(it)
+        }
 
         editProfileButton = view.findViewById(R.id.ibtnEditProfileButton)
         editProfileButton?.setOnClickListener(::onEditProfileButtonClicked)
@@ -161,7 +164,7 @@ class ProfileFragment : Fragment() {
         profileName?.text = name
         pic = editedPic
 
-        role = editRole?.text.toString()
+        role = getCurrentRole()
         profileRole?.text = role
 
         profileName?.visibility = View.VISIBLE
@@ -180,7 +183,9 @@ class ProfileFragment : Fragment() {
     fun onCancelEditButtonClicked(view: View) {
 
         editName?.setText(name)
-        editRole?.setText(role)
+        role?.let {
+            setCurrentRole(it)
+        }
 
         editedPic = pic
         profilePic?.setImageURI(pic)
@@ -195,6 +200,21 @@ class ProfileFragment : Fragment() {
         saveProfileEditButton?.visibility = View.GONE
         cancelProfileEditButton?.visibility = View.GONE
         editProfileButton?.visibility = View.VISIBLE
+    }
+
+    fun getCurrentRole(): String {
+        return when (editRole?.checkedRadioButtonId) {
+            R.id.rbCommunity -> "Community"
+            R.id.rbContributor -> "Contributor"
+            else -> "No selection"
+        }
+    }
+
+    fun setCurrentRole(currentRole: String) {
+        if (currentRole == "Community")
+            editRole?.check(R.id.rbCommunity)
+        else
+            editRole?.check(R.id.rbContributor)
     }
 
 }

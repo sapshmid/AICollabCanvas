@@ -12,6 +12,7 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
 
     interface OnPostInteractionListener {
         fun onDeletePost(position: Int)
+        fun onEditPost(position: Int)
     }
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -23,6 +24,7 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
         val postSubtitle: TextView = itemView.findViewById(R.id.tvPostSubtitle)
         val postText: TextView = itemView.findViewById(R.id.tvPostText)
         val btnDeletePost: ImageButton = itemView.findViewById(R.id.ibtnDeletePost)
+        val btnEditPost: ImageButton = itemView.findViewById(R.id.ibtnEditPostButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -43,6 +45,10 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
 
         holder.btnDeletePost.setOnClickListener {
             listener.onDeletePost(holder.adapterPosition)
+        }
+
+        holder.btnEditPost.setOnClickListener {
+            listener.onEditPost(holder.adapterPosition)
         }
     }
 
