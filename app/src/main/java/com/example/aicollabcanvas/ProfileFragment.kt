@@ -1,5 +1,6 @@
 package com.example.aicollabcanvas
 
+import PostAdapter
 import android.app.Activity
 import android.content.Intent
 import android.media.Image
@@ -16,6 +17,8 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class ProfileFragment : Fragment() {
@@ -40,6 +43,8 @@ class ProfileFragment : Fragment() {
 
     var saveProfileEditButton: ImageButton? = null
     var cancelProfileEditButton: ImageButton? = null
+
+    var recyclerView: RecyclerView? = null
 
     companion object {
 
@@ -132,6 +137,33 @@ class ProfileFragment : Fragment() {
         cancelProfileEditButton = view.findViewById(R.id.ibtnCancelButton)
         cancelProfileEditButton?.setOnClickListener(::onCancelEditButtonClicked)
 
+        recyclerView = view.findViewById(R.id.rvProfilePostsContainer)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
+
+        val postList = mutableListOf(
+            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
+                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
+            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
+                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
+        )
+
+        lateinit var adapter: PostAdapter
+        adapter = PostAdapter(postList, object : PostAdapter.OnPostInteractionListener {
+            override fun onDeletePost(position: Int) {
+                // Handle the delete action, e.g., remove the item from your dataset and notify the adapter
+                postList.removeAt(position)
+                adapter.notifyItemRemoved(position)
+            }
+
+            override fun onEditPost(position: Int) {
+                // Sheli - Navigate here to add post fragment with postList[position]
+            }
+
+        }, showEditButtons = true)
+
+
+        recyclerView?.adapter = adapter
+
         return view
     }
 
@@ -148,6 +180,7 @@ class ProfileFragment : Fragment() {
         cancelProfileEditButton?.visibility = View.VISIBLE
 
         editProfileButton?.visibility = View.GONE
+        recyclerView?.visibility = View.GONE
     }
 
     fun onEditPictureButtonClicked(view: View) {
@@ -178,6 +211,7 @@ class ProfileFragment : Fragment() {
         cancelProfileEditButton?.visibility = View.GONE
 
         editProfileButton?.visibility = View.VISIBLE
+        recyclerView?.visibility = View.VISIBLE
     }
 
     fun onCancelEditButtonClicked(view: View) {
@@ -200,6 +234,7 @@ class ProfileFragment : Fragment() {
         saveProfileEditButton?.visibility = View.GONE
         cancelProfileEditButton?.visibility = View.GONE
         editProfileButton?.visibility = View.VISIBLE
+        recyclerView?.visibility = View.VISIBLE
     }
 
     fun getCurrentRole(): String {
