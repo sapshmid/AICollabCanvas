@@ -79,7 +79,8 @@ class MainActivity : AppCompatActivity() {
                 findViewById<View>(R.id.rvMainPostContainer).visibility = View.GONE
             }
 
-        })
+        }, showEditButtons = false)
+
 
         recyclerView.adapter = adapter
     }

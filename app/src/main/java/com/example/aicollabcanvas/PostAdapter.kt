@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.aicollabcanvas.Post
 import com.example.aicollabcanvas.R
 
-class PostAdapter(private val posts: List<Post>, private val listener: OnPostInteractionListener) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private val posts: List<Post>, private val listener: OnPostInteractionListener, private val showEditButtons: Boolean) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     interface OnPostInteractionListener {
         fun onDeletePost(position: Int)
@@ -49,6 +49,11 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
 
         holder.btnEditPost.setOnClickListener {
             listener.onEditPost(holder.adapterPosition)
+        }
+
+        if (showEditButtons) {
+            holder.btnEditPost.visibility = View.VISIBLE
+            holder.btnDeletePost.visibility = View.VISIBLE
         }
     }
 
