@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //displayProfileFragment()
+        displayProfileFragment()
         //displayAddPostFragment()
-        displayPostFragment()
+        //displayPostFragment()
     }
 
 

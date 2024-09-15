@@ -89,6 +89,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etAddSubtitle"/>
 
+        <Button
+            android:id="@+id/btnAddPicture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/black"
+            android:textColorLink="#020202"
+            android:textSize="16sp"
+            android:text="@string/addPicPostButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivPostPic" />
+
         <EditText
             android:id="@+id/etAddText"
             android:layout_width="0dp"
@@ -101,27 +116,37 @@
             android:background="@drawable/edit_text_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivPostPic"/>
+            app:layout_constraintTop_toBottomOf="@id/btnAddPicture"/>
 
-        <Button
-            android:id="@+id/btnAddPicture"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/addPicPostButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etAddText" />
 
         <Button
             android:id="@+id/btnSubmit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/black"
+            android:textColorLink="#020202"
+            android:textSize="16sp"
             android:text="@string/submitPostButton"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnCancelPost"
+            app:layout_constraintTop_toBottomOf="@+id/etAddText" />
+
+        <Button
+            android:id="@+id/btnCancelPost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/black"
+            android:textColorLink="#020202"
+            android:textSize="16sp"
+            android:text="@string/cancelPostButton"
+            app:layout_constraintEnd_toStartOf="@+id/btnSubmit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddPicture" />
+            app:layout_constraintTop_toBottomOf="@+id/etAddText" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
