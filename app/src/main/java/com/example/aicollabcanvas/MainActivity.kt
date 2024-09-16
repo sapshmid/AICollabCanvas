@@ -9,6 +9,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.example.aicollabcanvas.ui.login.RegisterFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +22,15 @@ class MainActivity : AppCompatActivity() {
     //var profileFragment: ProfileFragment? = null
     //var addPostFragment: AddPostFragment? = null
     //var feedFragment: FeedFragment? = null
+    private var navController:NavController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+     val navHostFragment: NavHostFragment? = supportFragmentManager.findFragmentById(R.id.navHostMain) as? NavHostFragment
+       navController = navHostFragment?.navController
+    //  navController?.let { NavigationUI.setupActionBarWithNavController(this, it) }
 
         //displayProfileFragment()
         //displayAddPostFragment()
