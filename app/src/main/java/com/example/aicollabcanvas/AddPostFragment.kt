@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.Navigation
 
 
 class AddPostFragment : Fragment() {
@@ -88,6 +89,9 @@ class AddPostFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_add_post, container, false)
 
+        val btnCancelPost: Button = view.findViewById(R.id.btnCancelPost)
+        val btnSubmit: Button = view.findViewById(R.id.btnSubmit)
+
         profilePic = view.findViewById(R.id.ivProfilePic)
         profilePic?.setImageURI(profile?.pic)
 
@@ -117,6 +121,14 @@ class AddPostFragment : Fragment() {
         addPictureButton?.setOnClickListener(::onAddPictureButtonClicked)
         if (profile?.role == "Community")
             addPictureButton?.visibility = View.GONE
+
+       btnCancelPost.setOnClickListener{
+          Navigation.findNavController(view).popBackStack()
+       }
+
+       btnSubmit.setOnClickListener{
+           Navigation.findNavController(view).navigate(R.id.action_addPostFragment_to_feedFragment)
+        }
 
         return view
     }

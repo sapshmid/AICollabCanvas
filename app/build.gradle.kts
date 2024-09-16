@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -42,6 +43,11 @@ dependencies {
     //val nav_version = "2.8.0"
     //implementation("androidx.navigation:navigation-fragment:$nav_version")
     //implementation("androidx.navigation:navigation-ui:$nav_version")
+
+    val nav_version = "2.8.0"
+    // Views/Fragments integration
+    implementation("androidx.navigation:navigation-fragment:$nav_version")
+    implementation("androidx.navigation:navigation-ui:$nav_version")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

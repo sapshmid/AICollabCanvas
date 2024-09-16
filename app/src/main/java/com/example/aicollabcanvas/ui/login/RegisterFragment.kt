@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
+import androidx.navigation.Navigation
 import com.example.aicollabcanvas.R
 
 class RegisterFragment : Fragment() {
@@ -52,6 +53,7 @@ class RegisterFragment : Fragment() {
 
         btnRegister.setOnClickListener {
             registerNewMember()
+            Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
         }
 
         return view
