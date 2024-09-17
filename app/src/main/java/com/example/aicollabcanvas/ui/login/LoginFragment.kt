@@ -33,9 +33,11 @@ class LoginFragment : Fragment() {
           //  navigateToForgotPasswordFragment()
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
         }
+
         btnSignin.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment)
         }
+
         return view
     }
 
