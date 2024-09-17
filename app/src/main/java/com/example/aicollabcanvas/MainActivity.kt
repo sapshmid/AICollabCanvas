@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.aicollabcanvas.ui.login.RegisterFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
      val navHostFragment: NavHostFragment? = supportFragmentManager.findFragmentById(R.id.navHostMain) as? NavHostFragment
        navController = navHostFragment?.navController
        //navController?.let { NavigationUI.setupActionBarWithNavController(this, it) }
+
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.mainActivityBottomNavigationView)
+        navController?.let { NavigationUI.setupWithNavController(bottomNavigationView, it) }
 
         //displayProfileFragment()
         //displayAddPostFragment()
