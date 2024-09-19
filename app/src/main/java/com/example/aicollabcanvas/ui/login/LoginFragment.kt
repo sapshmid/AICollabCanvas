@@ -1,15 +1,28 @@
 package com.example.aicollabcanvas.ui.login
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import com.example.aicollabcanvas.GlobalProfileManager
 import com.example.aicollabcanvas.R
+import com.example.aicollabcanvas.UserProfile
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class LoginFragment : Fragment() {
+
+    private lateinit var btnSignin: Button
+    private lateinit var etEmailAddress: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var cpiLoginProgress: CircularProgressIndicator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,7 +34,10 @@ class LoginFragment : Fragment() {
         // Initialize the button
         val btnRegisterHere: Button = view.findViewById(R.id.btnRegisterhere)
         val btnForgotPassword: Button = view.findViewById(R.id.btnForgotPassword)
-        val btnSignin: Button = view.findViewById(R.id.btnSignin)
+        btnSignin = view.findViewById(R.id.btnSignin)
+        etEmailAddress = view.findViewById(R.id.etEmailAddress)
+        etPassword = view.findViewById(R.id.etPassword)
+        cpiLoginProgress = view.findViewById(R.id.cpiLoginProgress)
 
         // Set up click listener to navigate to RegisterFragment
         btnRegisterHere.setOnClickListener {
@@ -35,27 +51,56 @@ class LoginFragment : Fragment() {
         }
 
         btnSignin.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment)
+            performLogin()
         }
 
         return view
     }
 
-  //  private fun navigateToRegisterFragment() {
-        // Create an instance of RegisterFragment
-    //    val registerFragment = RegisterFragment()
+    private fun performLogin() {
+        val email = etEmailAddress.text.toString().trim()
+        val password = etPassword.text.toString().trim()
 
-        // Perform the fragment transaction
-        //requireActivity().supportFragmentManager.beginTransaction()
-        //    .replace(R.id.fcMainLoginFragment, registerFragment) // Replace with the actual container id in your layout
-        //    .addToBackStack(null) // Optional: Adds the transaction to the back stack
-        //    .commit()
- //   }
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(context, "Email and password cannot be empty", Toast.LENGTH_SHORT).show()
+            return
+        }
 
- //   private fun navigateToForgotPasswordFragment() {
- //       val forgotPasswordFragment = ForgotPasswordFragment()
- //       requireActivity().supportFragmentManager.beginTransaction()
- //           .replace(R.id.fcMainLoginFragment, forgotPasswordFragment) // Replace with your container ID
- //           .addToBackStack(null)
- //           .commit()
+        btnSignin.isEnabled = false
+        cpiLoginProgress.visibility = View.VISIBLE
+
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    fetchUserProfile()
+                } else {
+                    Toast.makeText(context, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    btnSignin.isEnabled = true
+                    cpiLoginProgress.visibility = View.GONE
+                }
+            }
     }
+
+    private fun fetchUserProfile() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            FirebaseFirestore.getInstance().collection("profiles").document(userId).get()
+                .addOnSuccessListener { document ->
+                    val userProfile = UserProfile(
+                        id = userId,
+                        name = document.getString("name") ?: "",
+                        role = document.getString("role") ?: "",
+                        profilePic =  document.getString("profilePic") ?: ""
+                    )
+                    GlobalProfileManager.setProfile(userProfile)
+                    findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to fetch profile: ${it.message}", Toast.LENGTH_SHORT).show()
+                }.addOnCompleteListener{
+                    btnSignin.isEnabled = true
+                    cpiLoginProgress.visibility = View.GONE
+                }
+        }
+    }
+}

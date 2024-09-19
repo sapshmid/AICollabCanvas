@@ -78,25 +78,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etAddPassword" />
 
-    <CheckBox
-        android:id="@+id/cbContibutor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="130dp"
-        android:layout_marginBottom="170dp"
-        android:text="@string/checkcontributor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <CheckBox
-        android:id="@+id/cbCommunity"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/rgRegisterRole"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="170dp"
-        android:text="@string/checkcommunity"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:gravity="center"
+        android:checkedButton="@id/rbRegisterCommunity"
+        app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword">
+
+        <RadioButton
+            android:id="@+id/rbRegisterCommunity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Community" />
+
+        <RadioButton
+            android:id="@+id/rbRegisterContributor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contributor" />
+
+    </RadioGroup>
 
     <Button
         android:id="@+id/btnRegister"
@@ -126,5 +131,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etFirstname" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cpiRegisterProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"  />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

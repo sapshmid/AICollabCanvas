@@ -14,68 +14,44 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import java.util.UUID
 
 
 class AddPostFragment : Fragment() {
-
-    var profile: Profile? = null
 
     var profilePic: ImageView? = null
     var profileName: TextView? = null
     var profileRole: TextView? = null
 
-    var title: String? = null
     var addTitle: EditText? = null
-
-    var subtitle: String? = null
     var addSubtitle: EditText? = null
-
-    var postPic: Uri? = null
     var postPicView: ImageView? = null
-
-    var text: String? = null
     var addText: EditText? = null
+    var postPicUrl: String? = null
+    var cpiAddPostProgress: CircularProgressIndicator? = null
 
+    var btnSubmit: Button? = null
+    var btnCancel: Button? = null
     var addPictureButton: Button? = null
     lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
-    companion object {
-        const val PROFILE = "profile"
-        const val POST = "post"
-
-        fun newInstance(profile: Profile, post: Post? = null) =
-            AddPostFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(PROFILE, profile)
-                    post?.let {
-                        putParcelable(POST, post);
-                    }
-                }
-            }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            profile = it.getParcelable(PROFILE)
-            val post: Post? = it.getParcelable(POST)
-            post?.let {
-                text = post.text
-                subtitle = post.subtitle
-                title = post.title
-                postPic = post.postPic
-            }
-        }
 
         galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val selectedImageUri = result.data?.data
                 selectedImageUri?.let {
                     postPicView?.setImageURI(it)
-                    postPic = it
+                    postPicUrl = it.toString()
                     postPicView?.visibility = View.VISIBLE
                 }
             }
@@ -89,11 +65,14 @@ class AddPostFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_add_post, container, false)
 
-        val btnCancelPost: Button = view.findViewById(R.id.btnCancelPost)
-        val btnSubmit: Button = view.findViewById(R.id.btnSubmit)
+        val profile = GlobalProfileManager.getProfile()
+        btnCancel = view.findViewById(R.id.btnCancelPost)
+        btnSubmit = view.findViewById(R.id.btnSubmit)
 
         profilePic = view.findViewById(R.id.ivProfilePic)
-        profilePic?.setImageURI(profile?.pic)
+        profilePic?.let {
+            Utils.setImageIntoView(it, profile?.profilePic, R.drawable.empty_profile)
+        }
 
         profileName = view.findViewById(R.id.tvProfileName)
         profileName?.text = profile?.name
@@ -102,33 +81,35 @@ class AddPostFragment : Fragment() {
         profileRole?.text = profile?.role
 
         addTitle = view.findViewById(R.id.etAddTitle)
-        addTitle?.setText(title)
+        //addTitle?.setText(title)
 
         addSubtitle = view.findViewById(R.id.etAddSubtitle)
-        addSubtitle?.setText(subtitle)
+        //addSubtitle?.setText(subtitle)
 
         postPicView = view.findViewById(R.id.ivPostPic)
         postPicView?.visibility = View.GONE
-        postPic?.let {
+        /*postPic?.let {
             postPicView?.setImageURI(it)
             postPicView?.visibility = View.VISIBLE
-        }
+        }*/
 
         addText = view.findViewById(R.id.etAddText)
-        addText?.setText(text)
+        //addText?.setText(text)
 
         addPictureButton = view.findViewById(R.id.btnAddPicture)
         addPictureButton?.setOnClickListener(::onAddPictureButtonClicked)
-        if (profile?.role == "Community")
+        if (profile?.role != "Contributor")
             addPictureButton?.visibility = View.GONE
 
-       btnCancelPost.setOnClickListener{
+        cpiAddPostProgress = view.findViewById(R.id.cpiAddPostProgress)
+
+        btnCancel?.setOnClickListener{
           Navigation.findNavController(view).popBackStack()
        }
 
-       btnSubmit.setOnClickListener{
-           Navigation.findNavController(view).navigate(R.id.action_addPostFragment_to_feedFragment)
-        }
+       btnSubmit?.setOnClickListener{
+           submitPost()
+       }
 
         return view
     }
@@ -140,5 +121,77 @@ class AddPostFragment : Fragment() {
         galleryLauncher.launch(galleryIntent)
     }
 
+    fun submitPost() {
+        val title = addTitle?.text.toString().trim()
+        val subtitle = addSubtitle?.text.toString().trim()
+        val text = addText?.text.toString().trim()
+        val postPic = postPicUrl ?: ""
+
+        if (title.trim() == "" || subtitle.trim() == "" || text.trim() == "") {
+            Toast.makeText(context, "Title, subtitle, and text cannot be empty", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Getting current user's ID as profileId
+        val profile = GlobalProfileManager.getProfile()
+        val profileRef = FirebaseFirestore.getInstance().collection("profiles").document(profile?.id ?: "")
+
+        // Prepare the data
+        val postData = hashMapOf(
+            "profileId" to profileRef,
+            "title" to title,
+            "subtitle" to subtitle,
+            "text" to text,
+            "postPic" to postPic
+        )
+
+        btnSubmit?.isEnabled = false;
+        btnCancel?.isEnabled = false;
+        cpiAddPostProgress?.visibility = View.VISIBLE
+
+        if (postPic.trim() != "")
+            uploadImageAndSavePost(postData)
+        else
+            savePost(postData)
+    }
+
+    private fun uploadImageAndSavePost(postData: HashMap<String, Any>) {
+        val fileName = "images/${UUID.randomUUID()}.jpg" // Generates a unique file name for the image
+        val storageRef = FirebaseStorage.getInstance().getReference(fileName)
+
+        val imageUrl = postData["postPic"].toString()
+
+        storageRef.putFile(Uri.parse(imageUrl))
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                    val fireImageUrl = uri.toString()
+                    postData["postPic"] = fireImageUrl
+                    savePost(postData)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
+                btnSubmit?.isEnabled = true;
+                btnCancel?.isEnabled = true;
+                cpiAddPostProgress?.visibility = View.GONE
+            }
+    }
+
+    private fun savePost(postData: HashMap<String, Any>) {
+        // Adding data to Firestore
+        FirebaseFirestore.getInstance().collection("posts").add(postData)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Post added successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_addPostFragment_to_feedFragment)
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error adding post: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnCompleteListener{
+                btnSubmit?.isEnabled = true;
+                btnCancel?.isEnabled = true;
+                cpiAddPostProgress?.visibility = View.GONE
+            }
+    }
 
 }

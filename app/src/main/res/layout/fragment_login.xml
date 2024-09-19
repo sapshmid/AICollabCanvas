@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="145dp"
+        android:layout_marginBottom="125dp"
         android:backgroundTint="@color/black"
         android:text="@string/sign_in"
         android:textColorLink="#020202"
@@ -117,11 +117,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:backgroundTint="#00FFFFFF"
         android:text="@string/forgot"
         android:textColor="@color/material_dynamic_neutral40"
         app:layout_constraintBottom_toTopOf="@+id/btnSignin"
         app:layout_constraintStart_toStartOf="parent" />
+
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cpiLoginProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignin"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

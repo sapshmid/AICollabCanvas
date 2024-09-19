@@ -3,7 +3,6 @@ package com.example.aicollabcanvas
 import PostAdapter
 import android.app.Activity
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,29 +14,28 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.firebase.appcheck.internal.util.Logger
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class ProfileFragment : Fragment() {
 
-    var name: String? = null
-    var role: String? = null
     var profileName: TextView? = null
     var profileRole: TextView? = null
+    var profilePic: ImageView? = null
 
     var editName: EditText? = null
     var editRole: RadioGroup? = null
-
     var editProfileButton: ImageButton? = null
-
-    var pic: Uri? = null
-    var profilePic: ImageView? = null
-
-    var editedPic: Uri? = null
     var editPictureButton: ImageButton? = null
+
+    var editedPic: String? = null
 
     lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
@@ -46,51 +44,21 @@ class ProfileFragment : Fragment() {
 
     var recyclerView: RecyclerView? = null
 
-    companion object {
-
-        // Later on, these will be the values received from the registration
-        const val NAME = "NAME"
-        const val ROLE = "ROLE"
-        const val PIC = "PIC"
-
-        fun newInstance(profile: Profile) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(NAME, profile.name)
-                    putString(ROLE, profile.role)
-                    putString(PIC, profile.pic.toString())
-                }
-            }
-
-    }
+    var cpiProfileProgress: CircularProgressIndicator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            name = it.getString(NAME)
-            role = it.getString(ROLE)
-            pic = Uri.parse(it.getString(PIC))
-            editedPic = pic
-        }
 
         galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val selectedImageUri = result.data?.data
                 selectedImageUri?.let {
                     profilePic?.setImageURI(it)
-                    editedPic = it
+                    editedPic = it.toString()
                 }
             }
         }
 
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(NAME, name)
-        outState.putString(ROLE, role)
-        outState.putString(PIC, pic.toString())
     }
 
     override fun onCreateView(
@@ -100,33 +68,16 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        // Restore saved instance state
-        savedInstanceState?.let {
-            name = it.getString(NAME)
-            role = it.getString(ROLE)
-            pic = Uri.parse(it.getString(PIC))
-        }
-
         profileName = view.findViewById(R.id.tvProfileName)
-        profileName?.text = name
-
         profileRole = view.findViewById(R.id.tvProfileRole)
-        profileRole?.text = role
+        profilePic = view.findViewById(R.id.ivProfilePic)
+        showProfile()
+
 
         editName = view.findViewById(R.id.etEditName)
-        editName?.setText(name)
-
         editRole = view.findViewById(R.id.rgRole)
-        role?.let {
-            setCurrentRole(it)
-        }
-
         editProfileButton = view.findViewById(R.id.ibtnEditProfileButton)
         editProfileButton?.setOnClickListener(::onEditProfileButtonClicked)
-
-        profilePic = view.findViewById(R.id.ivProfilePic)
-        profilePic?.setImageURI(pic)
-        profilePic?.visibility = View.VISIBLE
 
         editPictureButton = view.findViewById(R.id.ibtnEditPictureButton)
         editPictureButton?.setOnClickListener(::onEditPictureButtonClicked)
@@ -139,48 +90,32 @@ class ProfileFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.rvProfilePostsContainer)
         recyclerView?.layoutManager = LinearLayoutManager(context)
+        loadUserPosts()
 
-        val postList = mutableListOf(
-            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
-                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
-            Post(Profile("NewGuy", "Contributor", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.person8}")),
-                "Here is your picture", "some AI picture", "This is the picture that you needed in AI gxdgrsxdbdkjdvkl  dfisd jsdifj sd idsjfio siodf j ioszjedf diog xdf gxdxdj goixd", Uri.parse("android.resource://com.example.aicollabcanvas/${R.drawable.post_pic}")),
-        )
-
-        lateinit var adapter: PostAdapter
-        adapter = PostAdapter(postList, object : PostAdapter.OnPostInteractionListener {
-            override fun onDeletePost(position: Int) {
-                // Handle the delete action, e.g., remove the item from your dataset and notify the adapter
-                postList.removeAt(position)
-                adapter.notifyItemRemoved(position)
-            }
-
-            override fun onEditPost(position: Int) {
-                // Sheli - Navigate here to add post fragment with postList[position]
-            }
-
-        }, showEditButtons = true)
-
-
-        recyclerView?.adapter = adapter
-
+        cpiProfileProgress = view.findViewById(R.id.cpiProfileProgress)
         return view
+    }
+
+    private fun showProfile() {
+        val profile = GlobalProfileManager.getProfile()
+        profileName?.text = profile?.name
+        profileRole?.text = profile?.role
+        setProfilePic(profile?.profilePic)
+    }
+
+    private fun setProfilePic(imageUri: String?) {
+        profilePic?.let {
+            Utils.setImageIntoView(it, imageUri, R.drawable.empty_profile)
+        }
     }
 
     fun onEditProfileButtonClicked(view: View) {
 
-        profileName?.visibility = View.GONE
-        profileRole?.visibility = View.GONE
+        editName?.setText(profileName?.text)
+        setCurrentRole(profileRole?.text.toString())
+        editedPic = GlobalProfileManager.getProfile()?.profilePic
 
-        editName?.visibility = View.VISIBLE
-        editRole?.visibility = View.VISIBLE
-        editPictureButton?.visibility = View.VISIBLE
-
-        saveProfileEditButton?.visibility = View.VISIBLE
-        cancelProfileEditButton?.visibility = View.VISIBLE
-
-        editProfileButton?.visibility = View.GONE
-        recyclerView?.visibility = View.GONE
+        toggleEditMode(true)
     }
 
     fun onEditPictureButtonClicked(view: View) {
@@ -193,48 +128,50 @@ class ProfileFragment : Fragment() {
 
     fun onSaveEditButtonClicked(view: View) {
 
-        name = editName?.text.toString()
-        profileName?.text = name
-        pic = editedPic
+        val prevProfile = GlobalProfileManager.getProfile()
+        if (prevProfile != null) {
+            val name = editName?.text.toString()
+            val role = getCurrentRole()
+            val profilePic = editedPic
 
-        role = getCurrentRole()
-        profileRole?.text = role
+            if (name.trim() == "") {
+                Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        profileName?.visibility = View.VISIBLE
-        profileRole?.visibility = View.VISIBLE
+            cpiProfileProgress?.visibility = View.VISIBLE
+            saveProfileEditButton?.isEnabled = false
 
-        editName?.visibility = View.GONE
-        editRole?.visibility = View.GONE
-        editPictureButton?.visibility = View.GONE
-
-        saveProfileEditButton?.visibility = View.GONE
-        cancelProfileEditButton?.visibility = View.GONE
-
-        editProfileButton?.visibility = View.VISIBLE
-        recyclerView?.visibility = View.VISIBLE
+            if (profilePic != prevProfile.profilePic)
+                uploadImageAndSaveProfile(prevProfile.id, profilePic, name, role)
+            else if (name != prevProfile.name || role != prevProfile.role)
+                saveUserProfile(prevProfile.id, name, role, profilePic)
+            else {
+                cpiProfileProgress?.visibility = View.GONE
+                saveProfileEditButton?.isEnabled = true
+                toggleEditMode(false)
+            }
+        }
+        else toggleEditMode(false)
     }
 
     fun onCancelEditButtonClicked(view: View) {
+        showProfile()
+        toggleEditMode(false)
+    }
 
-        editName?.setText(name)
-        role?.let {
-            setCurrentRole(it)
-        }
+    fun toggleEditMode(isEditMode: Boolean) {
+        profileName?.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        profileRole?.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        editProfileButton?.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        recyclerView?.visibility = if (isEditMode) View.GONE else View.VISIBLE
 
-        editedPic = pic
-        profilePic?.setImageURI(pic)
+        editName?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        editRole?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        editPictureButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
 
-        profileName?.visibility = View.VISIBLE
-        profileRole?.visibility = View.VISIBLE
-
-        editName?.visibility = View.GONE
-        editRole?.visibility = View.GONE
-        editPictureButton?.visibility = View.GONE
-
-        saveProfileEditButton?.visibility = View.GONE
-        cancelProfileEditButton?.visibility = View.GONE
-        editProfileButton?.visibility = View.VISIBLE
-        recyclerView?.visibility = View.VISIBLE
+        saveProfileEditButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        cancelProfileEditButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
     }
 
     fun getCurrentRole(): String {
@@ -251,5 +188,98 @@ class ProfileFragment : Fragment() {
         else
             editRole?.check(R.id.rbContributor)
     }
+
+    private fun uploadImageAndSaveProfile(userId: String, imageUrl: String?, name: String, role: String) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/$userId.jpg")
+        storageRef.putFile(Uri.parse(imageUrl))
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                    val fireImageUrl = uri.toString()
+                    saveUserProfile(userId, name, role, fireImageUrl)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
+                cpiProfileProgress?.visibility = View.GONE
+                saveProfileEditButton?.isEnabled = true
+            }
+    }
+
+    private fun saveUserProfile(userId: String, name: String, role: String, imageUrl: String?) {
+        val userProfile = hashMapOf(
+            "name" to "$name",
+            "role" to "$role",
+            "profilePic" to imageUrl
+        )
+        FirebaseFirestore.getInstance().collection("profiles").document(userId).set(userProfile)
+            .addOnSuccessListener {
+                GlobalProfileManager.setProfile(UserProfile(
+                    id = userId,
+                    name = name,
+                    role = role,
+                    profilePic = imageUrl ?: ""
+                ))
+                Toast.makeText(context, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to create profile: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnCompleteListener {
+                cpiProfileProgress?.visibility = View.GONE
+                saveProfileEditButton?.isEnabled = true
+                showProfile()
+                toggleEditMode(false)
+            }
+    }
+
+    private fun loadUserPosts() {
+        val userId = GlobalProfileManager.getProfile()?.id
+        val profileRef = FirebaseFirestore.getInstance().collection("profiles").document(userId ?: "")
+
+        FirebaseFirestore.getInstance().collection("posts")
+            .whereEqualTo("profileId", profileRef)
+            .get()
+            .addOnSuccessListener { result ->
+                val posts = result.documents.map { document ->
+                    // Convert each document to a Post object
+                    document.toObject(Post::class.java)?.apply {
+                        id = document.id  // Set the ID of the Post object
+                        profile = GlobalProfileManager.getProfile()  // Set the associated profile
+                    }
+                }.filterNotNull()
+                setupRecyclerView(posts.toMutableList())
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error fetching posts: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun setupRecyclerView(posts: MutableList<Post>) {
+        lateinit var adapter: PostAdapter
+        adapter = PostAdapter(posts, object : PostAdapter.OnPostInteractionListener {
+            override fun onDeletePost(position: Int) {
+                deletePost(posts, position, adapter)
+            }
+
+            override fun onEditPost(position: Int) {
+                TODO("Not yet implemented")
+            }
+        }, true)
+        recyclerView?.adapter = adapter
+    }
+
+    private fun deletePost(posts: MutableList<Post>, position: Int, adapter: PostAdapter) {
+        FirebaseFirestore.getInstance().collection("posts").document(posts[position].id)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_SHORT).show()
+                posts.removeAt(position)
+                adapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error deleting post: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
 }
