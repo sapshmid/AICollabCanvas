@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.navigation.Navigation
 import com.example.aicollabcanvas.R
 
 class ForgotPasswordFragment : Fragment() {
@@ -31,6 +32,7 @@ class ForgotPasswordFragment : Fragment() {
 
         btnSubmit.setOnClickListener {
             handleChangePassword()
+            Navigation.findNavController(view).navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
         }
 
         return view
