@@ -39,7 +39,7 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
         holder.postProfileRole.text = post.profile?.role
         Utils.setImageIntoView(holder.postProfilePic, post.profile?.profilePic, R.drawable.empty_profile)
         holder.postReplayPic.visibility = if (post.profile?.role == "Contributor" && post.postPic != null && post.postPic.trim() != "") View.VISIBLE else View.GONE
-        Utils.setImageIntoView(holder.postReplayPic, post.postPic, R.drawable.empty_profile)
+        Utils.setImageIntoView(holder.postReplayPic, post.postPic, R.drawable.loading_pic)
         holder.postTitle.text = post.title
         holder.postSubtitle.text = post.subtitle
         holder.postText.text = post.text
