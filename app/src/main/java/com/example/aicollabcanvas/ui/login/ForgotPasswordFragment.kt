@@ -32,7 +32,7 @@ class ForgotPasswordFragment : Fragment() {
 
         btnSubmit.setOnClickListener {
             handleChangePassword()
-            Navigation.findNavController(view).navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+            Navigation.findNavController(view).navigate(ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToLoginFragment())
         }
 
         return view

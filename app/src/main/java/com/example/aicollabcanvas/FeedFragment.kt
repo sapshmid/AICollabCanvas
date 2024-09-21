@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -16,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 
 class FeedFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
+    private lateinit var cpiFeedProgress: CircularProgressIndicator
     private var posts = mutableListOf<Post>()
 
     override fun onCreateView(
@@ -23,13 +26,17 @@ class FeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_feed, container, false)
+        cpiFeedProgress = view.findViewById(R.id.cpiFeedProgress)
         recyclerView = view.findViewById(R.id.rvFeedPostsContainer)
         recyclerView.layoutManager = LinearLayoutManager(context)
+
         initializePostList()
         return view
     }
 
     private fun initializePostList() {
+        posts.clear()
+        cpiFeedProgress.visibility = View.VISIBLE
         FirebaseFirestore.getInstance().collection("posts").get().addOnSuccessListener { result ->
             for (document in result) {
                 val post = document.toObject(Post::class.java)
@@ -43,6 +50,10 @@ class FeedFragment : Fragment() {
                     }
                 }
             }
+            cpiFeedProgress.visibility = View.GONE
+        }.addOnFailureListener {
+            Toast.makeText(context, "Error fetching posts: ${it.message}", Toast.LENGTH_SHORT).show()
+            cpiFeedProgress.visibility = View.GONE
         }
     }
 

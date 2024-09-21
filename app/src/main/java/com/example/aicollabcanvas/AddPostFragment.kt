@@ -133,7 +133,7 @@ class AddPostFragment : Fragment() {
                 }
                 .addOnFailureListener { err ->
                     Toast.makeText(context, "Error fetching post: ${err.message}", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_addPostFragment_to_ProfileFragment)
+                    findNavController().navigate(AddPostFragmentDirections.actionAddPostFragmentToProfileFragment())
                 }
                 .addOnCompleteListener {
                     clPostFormLayout?.visibility = View.VISIBLE
@@ -216,7 +216,7 @@ class AddPostFragment : Fragment() {
         docReference
             .addOnSuccessListener {
                 Toast.makeText(context, "Post saved successfully", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_addPostFragment_to_feedFragment)
+                findNavController().navigate(AddPostFragmentDirections.actionAddPostFragmentToFeedFragment())
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error saving post: ${it.message}", Toast.LENGTH_SHORT).show()

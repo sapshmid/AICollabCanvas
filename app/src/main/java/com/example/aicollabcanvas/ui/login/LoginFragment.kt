@@ -43,12 +43,12 @@ class LoginFragment : Fragment() {
         // Set up click listener to navigate to RegisterFragment
         btnRegisterHere.setOnClickListener {
           //  navigateToRegisterFragment()
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment3)
+            Navigation.findNavController(view).navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment3())
         }
 
         btnForgotPassword.setOnClickListener {
           //  navigateToForgotPasswordFragment()
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+            Navigation.findNavController(view).navigate(LoginFragmentDirections.actionLoginFragmentToForgotPasswordFragment())
         }
 
         btnSignin.setOnClickListener {
@@ -94,7 +94,9 @@ class LoginFragment : Fragment() {
                         profilePic =  document.getString("profilePic") ?: ""
                     )
                     GlobalProfileManager.setProfile(userProfile)
-                    findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+                    // Navigate not using the graph, so that the user can't "back" into this fragment
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.feedFragment)
                     activity?.let { activity ->
                         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.mainActivityBottomNavigationView)
                         bottomNav.visibility = View.VISIBLE

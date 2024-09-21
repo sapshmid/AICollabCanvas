@@ -116,7 +116,7 @@ class RegisterFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(context, "Profile created successfully", Toast.LENGTH_SHORT).show()
                 // Navigate to another fragment or activity as needed
-                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToLoginFragment())
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Failed to create profile: ${it.message}", Toast.LENGTH_SHORT).show()

@@ -47,6 +47,7 @@ class ProfileFragment : Fragment() {
     var recyclerView: RecyclerView? = null
 
     var cpiProfileProgress: CircularProgressIndicator? = null
+    var cpiProfileFeedProgress: CircularProgressIndicator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,9 +93,11 @@ class ProfileFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.rvProfilePostsContainer)
         recyclerView?.layoutManager = LinearLayoutManager(context)
-        loadUserPosts()
 
         cpiProfileProgress = view.findViewById(R.id.cpiProfileProgress)
+        cpiProfileFeedProgress = view.findViewById(R.id.cpiProfileFeedProgress)
+
+        loadUserPosts()
         return view
     }
 
@@ -238,6 +241,7 @@ class ProfileFragment : Fragment() {
         val userId = GlobalProfileManager.getProfile()?.id
         val profileRef = FirebaseFirestore.getInstance().collection("profiles").document(userId ?: "")
 
+        cpiProfileFeedProgress?.visibility = View.VISIBLE
         FirebaseFirestore.getInstance().collection("posts")
             .whereEqualTo("profileId", profileRef)
             .get()
@@ -250,9 +254,11 @@ class ProfileFragment : Fragment() {
                     }
                 }.filterNotNull()
                 setupRecyclerView(posts.toMutableList())
+                cpiProfileFeedProgress?.visibility = View.GONE
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error fetching posts: ${it.message}", Toast.LENGTH_SHORT).show()
+                cpiProfileFeedProgress?.visibility = View.GONE
             }
     }
 
