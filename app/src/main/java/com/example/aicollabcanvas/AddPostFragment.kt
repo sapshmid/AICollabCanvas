@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -26,6 +27,10 @@ import java.util.UUID
 
 
 class AddPostFragment : Fragment() {
+
+    var postId: String? = null
+
+    var clPostFormLayout: ConstraintLayout? = null
 
     var profilePic: ImageView? = null
     var profileName: TextView? = null
@@ -37,6 +42,7 @@ class AddPostFragment : Fragment() {
     var addText: EditText? = null
     var postPicUrl: String? = null
     var cpiAddPostProgress: CircularProgressIndicator? = null
+    var cpiEditPostProgress: CircularProgressIndicator? = null
 
     var btnSubmit: Button? = null
     var btnCancel: Button? = null
@@ -62,6 +68,7 @@ class AddPostFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_add_post, container, false)
 
@@ -81,20 +88,14 @@ class AddPostFragment : Fragment() {
         profileRole?.text = profile?.role
 
         addTitle = view.findViewById(R.id.etAddTitle)
-        //addTitle?.setText(title)
 
         addSubtitle = view.findViewById(R.id.etAddSubtitle)
-        //addSubtitle?.setText(subtitle)
 
         postPicView = view.findViewById(R.id.ivPostPic)
         postPicView?.visibility = View.GONE
-        /*postPic?.let {
-            postPicView?.setImageURI(it)
-            postPicView?.visibility = View.VISIBLE
-        }*/
 
         addText = view.findViewById(R.id.etAddText)
-        //addText?.setText(text)
+
 
         addPictureButton = view.findViewById(R.id.btnAddPicture)
         addPictureButton?.setOnClickListener(::onAddPictureButtonClicked)
@@ -102,14 +103,44 @@ class AddPostFragment : Fragment() {
             addPictureButton?.visibility = View.GONE
 
         cpiAddPostProgress = view.findViewById(R.id.cpiAddPostProgress)
+        cpiEditPostProgress = view.findViewById(R.id.cpiEditPostProgress)
+        clPostFormLayout = view.findViewById(R.id.clPostFormLayout)
 
         btnCancel?.setOnClickListener{
           Navigation.findNavController(view).popBackStack()
        }
 
-       btnSubmit?.setOnClickListener{
+        btnSubmit?.setOnClickListener{
            submitPost()
-       }
+        }
+
+        postId = arguments?.getString("postId")
+        postId?.let {
+            cpiEditPostProgress?.visibility = View.VISIBLE
+            clPostFormLayout?.visibility = View.GONE
+
+            FirebaseFirestore.getInstance().collection("posts").document(it).get()
+                .addOnSuccessListener { document ->
+                    addTitle?.setText(document.getString("title"))
+                    addSubtitle?.setText(document.getString("subtitle"))
+                    addText?.setText(document.getString("text"))
+
+                    val postPic = document.getString("postPic")
+                    if (postPic != null && postPic.trim() != "") {
+                        Utils.setImageIntoView(postPicView!!, postPic, R.drawable.empty_profile)
+                        postPicView?.visibility = View.VISIBLE
+                    }
+                }
+                .addOnFailureListener { err ->
+                    Toast.makeText(context, "Error fetching post: ${err.message}", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_addPostFragment_to_ProfileFragment)
+                }
+                .addOnCompleteListener {
+                    clPostFormLayout?.visibility = View.VISIBLE
+                    cpiEditPostProgress?.visibility = View.GONE
+                }
+
+        }
 
         return view
     }
@@ -179,13 +210,16 @@ class AddPostFragment : Fragment() {
 
     private fun savePost(postData: HashMap<String, Any>) {
         // Adding data to Firestore
-        FirebaseFirestore.getInstance().collection("posts").add(postData)
+        val colReference = FirebaseFirestore.getInstance().collection("posts")
+        val docReference = if (postId != null) colReference.document(postId!!).set(postData) else colReference.add(postData)
+
+        docReference
             .addOnSuccessListener {
-                Toast.makeText(context, "Post added successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Post saved successfully", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_addPostFragment_to_feedFragment)
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error adding post: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error saving post: ${it.message}", Toast.LENGTH_SHORT).show()
             }
             .addOnCompleteListener{
                 btnSubmit?.isEnabled = true;

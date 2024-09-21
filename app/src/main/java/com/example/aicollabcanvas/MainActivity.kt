@@ -18,6 +18,7 @@ import com.example.aicollabcanvas.ui.login.RegisterFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,5 +35,11 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView =
             findViewById(R.id.mainActivityBottomNavigationView)
         navController?.let { NavigationUI.setupWithNavController(bottomNavigationView, it) }
+
+        val auth = FirebaseAuth.getInstance()
+
+        // Initialize in a signed-out mode
+        auth.signOut()
+        bottomNavigationView.visibility = View.GONE
     }
 }

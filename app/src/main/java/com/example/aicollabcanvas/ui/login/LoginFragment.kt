@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.aicollabcanvas.GlobalProfileManager
 import com.example.aicollabcanvas.R
 import com.example.aicollabcanvas.UserProfile
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class LoginFragment : Fragment() {
@@ -94,6 +95,10 @@ class LoginFragment : Fragment() {
                     )
                     GlobalProfileManager.setProfile(userProfile)
                     findNavController().navigate(R.id.action_loginFragment_to_feedFragment)
+                    activity?.let { activity ->
+                        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.mainActivityBottomNavigationView)
+                        bottomNav.visibility = View.VISIBLE
+                    }
                 }
                 .addOnFailureListener {
                     Toast.makeText(context, "Failed to fetch profile: ${it.message}", Toast.LENGTH_SHORT).show()
