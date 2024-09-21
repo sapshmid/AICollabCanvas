@@ -112,19 +112,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btnForgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="50dp"
-        android:backgroundTint="#00FFFFFF"
-        android:text="@string/forgot"
-        android:textColor="@color/material_dynamic_neutral40"
-        app:layout_constraintBottom_toTopOf="@+id/btnSignin"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/cpiLoginProgress"
         android:layout_width="wrap_content"
