@@ -1,11 +1,9 @@
 package com.example.aicollabcanvas
 
-import PostAdapter
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.Profile
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,32 +20,31 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.google.firebase.appcheck.internal.util.Logger
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 class ProfileFragment : Fragment() {
 
-    var profileName: TextView? = null
-    var profileRole: TextView? = null
-    var profilePic: ImageView? = null
+    private var editedPic: String? = null
 
-    var editName: EditText? = null
-    var editRole: RadioGroup? = null
-    var editProfileButton: ImageButton? = null
-    var editPictureButton: ImageButton? = null
+    private lateinit var profileName: TextView
+    private lateinit var profileRole: TextView
+    private lateinit var profilePic: ImageView
 
-    var editedPic: String? = null
+    private lateinit var editName: EditText
+    private lateinit var editRole: RadioGroup
+    private lateinit var editProfileButton: ImageButton
+    private lateinit var editPictureButton: ImageButton
 
-    lateinit var galleryLauncher: ActivityResultLauncher<Intent>
+    private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
 
-    var saveProfileEditButton: ImageButton? = null
-    var cancelProfileEditButton: ImageButton? = null
+    private lateinit var saveProfileEditButton: ImageButton
+    private lateinit var cancelProfileEditButton: ImageButton
 
-    var recyclerView: RecyclerView? = null
+    private lateinit var recyclerView: RecyclerView
 
-    var cpiProfileProgress: CircularProgressIndicator? = null
-    var cpiProfileFeedProgress: CircularProgressIndicator? = null
+    private lateinit var cpiProfileProgress: CircularProgressIndicator
+    private lateinit var cpiProfileFeedProgress: CircularProgressIndicator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +53,7 @@ class ProfileFragment : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val selectedImageUri = result.data?.data
                 selectedImageUri?.let {
-                    profilePic?.setImageURI(it)
+                    profilePic.setImageURI(it)
                     editedPic = it.toString()
                 }
             }
@@ -80,19 +77,19 @@ class ProfileFragment : Fragment() {
         editName = view.findViewById(R.id.etEditName)
         editRole = view.findViewById(R.id.rgRole)
         editProfileButton = view.findViewById(R.id.ibtnEditProfileButton)
-        editProfileButton?.setOnClickListener(::onEditProfileButtonClicked)
+        editProfileButton.setOnClickListener(::onEditProfileButtonClicked)
 
         editPictureButton = view.findViewById(R.id.ibtnEditPictureButton)
-        editPictureButton?.setOnClickListener(::onEditPictureButtonClicked)
+        editPictureButton.setOnClickListener(::onEditPictureButtonClicked)
 
         saveProfileEditButton = view.findViewById(R.id.ibtnSaveButton)
-        saveProfileEditButton?.setOnClickListener(::onSaveEditButtonClicked)
+        saveProfileEditButton.setOnClickListener(::onSaveEditButtonClicked)
 
         cancelProfileEditButton = view.findViewById(R.id.ibtnCancelButton)
-        cancelProfileEditButton?.setOnClickListener(::onCancelEditButtonClicked)
+        cancelProfileEditButton.setOnClickListener(::onCancelEditButtonClicked)
 
         recyclerView = view.findViewById(R.id.rvProfilePostsContainer)
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         cpiProfileProgress = view.findViewById(R.id.cpiProfileProgress)
         cpiProfileFeedProgress = view.findViewById(R.id.cpiProfileFeedProgress)
@@ -103,27 +100,25 @@ class ProfileFragment : Fragment() {
 
     private fun showProfile() {
         val profile = GlobalProfileManager.getProfile()
-        profileName?.text = profile?.name
-        profileRole?.text = profile?.role
+        profileName.text = profile?.name
+        profileRole.text = profile?.role
         setProfilePic(profile?.profilePic)
     }
 
     private fun setProfilePic(imageUri: String?) {
-        profilePic?.let {
-            Utils.setImageIntoView(it, imageUri, R.drawable.empty_profile)
-        }
+        Utils.setImageIntoView(profilePic, imageUri, R.drawable.empty_profile)
     }
 
-    fun onEditProfileButtonClicked(view: View) {
+    private fun onEditProfileButtonClicked(view: View) {
 
-        editName?.setText(profileName?.text)
-        setCurrentRole(profileRole?.text.toString())
+        editName.setText(profileName.text)
+        setCurrentRole(profileRole.text.toString())
         editedPic = GlobalProfileManager.getProfile()?.profilePic
 
         toggleEditMode(true)
     }
 
-    fun onEditPictureButtonClicked(view: View) {
+    private fun onEditPictureButtonClicked(view: View) {
 
         val galleryIntent = Intent(Intent.ACTION_PICK)
         galleryIntent.type = "image/*"
@@ -131,11 +126,11 @@ class ProfileFragment : Fragment() {
 
     }
 
-    fun onSaveEditButtonClicked(view: View) {
+    private fun onSaveEditButtonClicked(view: View) {
 
         val prevProfile = GlobalProfileManager.getProfile()
         if (prevProfile != null) {
-            val name = editName?.text.toString()
+            val name = editName.text.toString()
             val role = getCurrentRole()
             val profilePic = editedPic
 
@@ -144,54 +139,54 @@ class ProfileFragment : Fragment() {
                 return
             }
 
-            cpiProfileProgress?.visibility = View.VISIBLE
-            saveProfileEditButton?.isEnabled = false
+            cpiProfileProgress.visibility = View.VISIBLE
+            saveProfileEditButton.isEnabled = false
 
             if (profilePic != prevProfile.profilePic)
                 uploadImageAndSaveProfile(prevProfile.id, profilePic, name, role)
             else if (name != prevProfile.name || role != prevProfile.role)
                 saveUserProfile(prevProfile.id, name, role, profilePic)
             else {
-                cpiProfileProgress?.visibility = View.GONE
-                saveProfileEditButton?.isEnabled = true
+                cpiProfileProgress.visibility = View.GONE
+                saveProfileEditButton.isEnabled = true
                 toggleEditMode(false)
             }
         }
         else toggleEditMode(false)
     }
 
-    fun onCancelEditButtonClicked(view: View) {
+    private fun onCancelEditButtonClicked(view: View) {
         showProfile()
         toggleEditMode(false)
     }
 
-    fun toggleEditMode(isEditMode: Boolean) {
-        profileName?.visibility = if (isEditMode) View.GONE else View.VISIBLE
-        profileRole?.visibility = if (isEditMode) View.GONE else View.VISIBLE
-        editProfileButton?.visibility = if (isEditMode) View.GONE else View.VISIBLE
-        recyclerView?.visibility = if (isEditMode) View.GONE else View.VISIBLE
+    private fun toggleEditMode(isEditMode: Boolean) {
+        profileName.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        profileRole.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        editProfileButton.visibility = if (isEditMode) View.GONE else View.VISIBLE
+        recyclerView.visibility = if (isEditMode) View.GONE else View.VISIBLE
 
-        editName?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
-        editRole?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
-        editPictureButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        editName.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        editRole.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        editPictureButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
 
-        saveProfileEditButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
-        cancelProfileEditButton?.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        saveProfileEditButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
+        cancelProfileEditButton.visibility = if (!isEditMode) View.GONE else View.VISIBLE
     }
 
-    fun getCurrentRole(): String {
-        return when (editRole?.checkedRadioButtonId) {
+    private fun getCurrentRole(): String {
+        return when (editRole.checkedRadioButtonId) {
             R.id.rbCommunity -> "Community"
             R.id.rbContributor -> "Contributor"
             else -> "No selection"
         }
     }
 
-    fun setCurrentRole(currentRole: String) {
+    private fun setCurrentRole(currentRole: String) {
         if (currentRole == "Community")
-            editRole?.check(R.id.rbCommunity)
+            editRole.check(R.id.rbCommunity)
         else
-            editRole?.check(R.id.rbContributor)
+            editRole.check(R.id.rbContributor)
     }
 
     private fun uploadImageAndSaveProfile(userId: String, imageUrl: String?, name: String, role: String) {
@@ -205,15 +200,15 @@ class ProfileFragment : Fragment() {
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
-                cpiProfileProgress?.visibility = View.GONE
-                saveProfileEditButton?.isEnabled = true
+                cpiProfileProgress.visibility = View.GONE
+                saveProfileEditButton.isEnabled = true
             }
     }
 
     private fun saveUserProfile(userId: String, name: String, role: String, imageUrl: String?) {
         val userProfile = hashMapOf(
-            "name" to "$name",
-            "role" to "$role",
+            "name" to name,
+            "role" to role,
             "profilePic" to imageUrl
         )
         FirebaseFirestore.getInstance().collection("profiles").document(userId).set(userProfile)
@@ -230,8 +225,8 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(context, "Failed to create profile: ${it.message}", Toast.LENGTH_SHORT).show()
             }
             .addOnCompleteListener {
-                cpiProfileProgress?.visibility = View.GONE
-                saveProfileEditButton?.isEnabled = true
+                cpiProfileProgress.visibility = View.GONE
+                saveProfileEditButton.isEnabled = true
                 showProfile()
                 toggleEditMode(false)
             }
@@ -241,24 +236,24 @@ class ProfileFragment : Fragment() {
         val userId = GlobalProfileManager.getProfile()?.id
         val profileRef = FirebaseFirestore.getInstance().collection("profiles").document(userId ?: "")
 
-        cpiProfileFeedProgress?.visibility = View.VISIBLE
+        cpiProfileFeedProgress.visibility = View.VISIBLE
         FirebaseFirestore.getInstance().collection("posts")
             .whereEqualTo("profileId", profileRef)
             .get()
             .addOnSuccessListener { result ->
-                val posts = result.documents.map { document ->
+                val posts = result.documents.mapNotNull { document ->
                     // Convert each document to a Post object
                     document.toObject(Post::class.java)?.apply {
                         id = document.id  // Set the ID of the Post object
                         profile = GlobalProfileManager.getProfile()  // Set the associated profile
                     }
-                }.filterNotNull()
+                }
                 setupRecyclerView(posts.toMutableList())
-                cpiProfileFeedProgress?.visibility = View.GONE
+                cpiProfileFeedProgress.visibility = View.GONE
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error fetching posts: ${it.message}", Toast.LENGTH_SHORT).show()
-                cpiProfileFeedProgress?.visibility = View.GONE
+                cpiProfileFeedProgress.visibility = View.GONE
             }
     }
 
@@ -274,7 +269,7 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }, true)
-        recyclerView?.adapter = adapter
+        recyclerView.adapter = adapter
     }
 
     private fun deletePost(posts: MutableList<Post>, position: Int, adapter: PostAdapter) {
@@ -283,7 +278,7 @@ class ProfileFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_SHORT).show()
                 posts.removeAt(position)
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRemoved(position)
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error deleting post: ${it.message}", Toast.LENGTH_SHORT).show()

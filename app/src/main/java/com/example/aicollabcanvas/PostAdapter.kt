@@ -1,3 +1,5 @@
+package com.example.aicollabcanvas
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -5,9 +7,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aicollabcanvas.Post
-import com.example.aicollabcanvas.R
-import com.example.aicollabcanvas.Utils
 
 class PostAdapter(private val posts: List<Post>, private val listener: OnPostInteractionListener?, private val showEditButtons: Boolean) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 

@@ -2,19 +2,15 @@ package com.example.aicollabcanvas.ui.login
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.aicollabcanvas.R
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -53,7 +49,7 @@ class RegisterFragment : Fragment() {
     }
 
 
-    fun getCurrentRole(): String {
+    private fun getCurrentRole(): String {
         return when (rgRole.checkedRadioButtonId) {
             R.id.rbRegisterCommunity -> "Community"
             R.id.rbRegisterContributor -> "Contributor"
@@ -82,7 +78,7 @@ class RegisterFragment : Fragment() {
             return
         }
 
-        btnRegister.isEnabled = false;
+        btnRegister.isEnabled = false
         cpiRegisterProgress.visibility = View.VISIBLE
 
         // Proceed with saving the data (e.g., to a backend service or local database)
@@ -92,7 +88,7 @@ class RegisterFragment : Fragment() {
                 if (task.isSuccessful) {
                     val firebaseUser = task.result?.user
                     if (firebaseUser != null) {
-                        saveUserProfile(firebaseUser.uid, firstName, lastName, role);
+                        saveUserProfile(firebaseUser.uid, firstName, lastName, role)
                     } else {
                         btnRegister.isEnabled = true
                         cpiRegisterProgress.visibility = View.GONE
@@ -109,7 +105,7 @@ class RegisterFragment : Fragment() {
     private fun saveUserProfile(userId: String, firstName: String, lastName: String, role: String) {
         val userProfile = hashMapOf(
             "name" to "$firstName $lastName",
-            "role" to "$role", // Modify as needed
+            "role" to role, // Modify as needed
             "profilePic" to ""
         )
         FirebaseFirestore.getInstance().collection("profiles").document(userId).set(userProfile)
