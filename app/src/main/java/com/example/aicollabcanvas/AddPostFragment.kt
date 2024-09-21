@@ -41,6 +41,7 @@ class AddPostFragment : Fragment() {
     var postPicView: ImageView? = null
     var addText: EditText? = null
     var postPicUrl: String? = null
+    var originalPostPicUrl: String? = null
     var cpiAddPostProgress: CircularProgressIndicator? = null
     var cpiEditPostProgress: CircularProgressIndicator? = null
 
@@ -125,10 +126,16 @@ class AddPostFragment : Fragment() {
                     addSubtitle?.setText(document.getString("subtitle"))
                     addText?.setText(document.getString("text"))
 
-                    val postPic = document.getString("postPic")
-                    if (postPic != null && postPic.trim() != "") {
-                        Utils.setImageIntoView(postPicView!!, postPic, R.drawable.empty_profile)
-                        postPicView?.visibility = View.VISIBLE
+                    originalPostPicUrl = document.getString("postPic")
+                    originalPostPicUrl?.let { url ->
+                        if (url.trim() != "") {
+                            Utils.setImageIntoView(
+                                postPicView!!,
+                                url,
+                                R.drawable.loading_pic
+                            )
+                            postPicView?.visibility = View.VISIBLE
+                        }
                     }
                 }
                 .addOnFailureListener { err ->
@@ -156,7 +163,7 @@ class AddPostFragment : Fragment() {
         val title = addTitle?.text.toString().trim()
         val subtitle = addSubtitle?.text.toString().trim()
         val text = addText?.text.toString().trim()
-        val postPic = postPicUrl ?: ""
+        val postPic = postPicUrl ?: originalPostPicUrl ?: ""
 
         if (title.trim() == "" || subtitle.trim() == "" || text.trim() == "") {
             Toast.makeText(context, "Title, subtitle, and text cannot be empty", Toast.LENGTH_SHORT).show()
@@ -180,7 +187,7 @@ class AddPostFragment : Fragment() {
         btnCancel?.isEnabled = false;
         cpiAddPostProgress?.visibility = View.VISIBLE
 
-        if (postPic.trim() != "")
+        if (postPic.trim() != ""  && postPic != originalPostPicUrl)
             uploadImageAndSavePost(postData)
         else
             savePost(postData)
