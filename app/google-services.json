@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "948262930540",
+    "project_id": "aicollabcanvas-a896e",
+    "storage_bucket": "aicollabcanvas-a896e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948262930540:android:b84cb94da281cd8512b049",
+        "android_client_info": {
+          "package_name": "com.example.aicollabcanvas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2JUDyQhAsiSQQkJY4CIb_HzHgLS_9Ow4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

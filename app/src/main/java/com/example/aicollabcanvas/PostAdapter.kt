@@ -1,3 +1,5 @@
+package com.example.aicollabcanvas
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -5,10 +7,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aicollabcanvas.Post
-import com.example.aicollabcanvas.R
 
-class PostAdapter(private val posts: List<Post>, private val listener: OnPostInteractionListener, private val showEditButtons: Boolean) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private val posts: List<Post>, private val listener: OnPostInteractionListener?, private val showEditButtons: Boolean) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     interface OnPostInteractionListener {
         fun onDeletePost(position: Int)
@@ -34,21 +34,21 @@ class PostAdapter(private val posts: List<Post>, private val listener: OnPostInt
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
-        holder.postProfileName.text = post.user.name
-        holder.postProfileRole.text = post.user.role
-        holder.postProfilePic.setImageURI(post.user.pic)
-        holder.postReplayPic.visibility = if (post.user.role == "Contributor" && post.postPic != null) View.VISIBLE else View.GONE
-        holder.postReplayPic.setImageURI(post.postPic)
+        holder.postProfileName.text = post.profile?.name
+        holder.postProfileRole.text = post.profile?.role
+        Utils.setImageIntoView(holder.postProfilePic, post.profile?.profilePic, R.drawable.empty_profile)
+        holder.postReplayPic.visibility = if (post.profile?.role == "Contributor" && post.postPic != null && post.postPic.trim() != "") View.VISIBLE else View.GONE
+        Utils.setImageIntoView(holder.postReplayPic, post.postPic, R.drawable.loading_pic)
         holder.postTitle.text = post.title
         holder.postSubtitle.text = post.subtitle
         holder.postText.text = post.text
 
         holder.btnDeletePost.setOnClickListener {
-            listener.onDeletePost(holder.adapterPosition)
+            listener?.onDeletePost(holder.adapterPosition)
         }
 
         holder.btnEditPost.setOnClickListener {
-            listener.onEditPost(holder.adapterPosition)
+            listener?.onEditPost(holder.adapterPosition)
         }
 
         if (showEditButtons) {

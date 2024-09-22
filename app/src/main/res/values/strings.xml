@@ -21,7 +21,6 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
-    <string name="forgot">Forgot Password?</string>
     <string name="newhere">New Here? Sign Up Now!</string>
     <string name="register">Register to be a member!</string>
     <string name="firstName">First Name</string>
