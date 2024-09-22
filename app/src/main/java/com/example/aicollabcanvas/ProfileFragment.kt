@@ -219,6 +219,7 @@ class ProfileFragment : Fragment() {
                     role = role,
                     profilePic = imageUrl ?: ""
                 ))
+                loadUserPosts()
                 Toast.makeText(context, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
