@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.appcheck.internal.util.Logger
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -46,14 +47,17 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
-        // Initialize in a signed-out mode
-        auth.signOut()
-        bottomNavigationView.visibility = View.GONE
+        GlobalProfileManager.getProfile()?.let {
+            bottomNavigationView.visibility = View.VISIBLE
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        FirebaseAuth.getInstance().signOut() // Log out when the app is stopped.
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (isFinishing) {
+            FirebaseAuth.getInstance().signOut() // Log out when the app is stopped.
+            GlobalProfileManager.clearProfile()
+        }
     }
 }
